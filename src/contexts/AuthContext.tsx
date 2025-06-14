@@ -8,7 +8,7 @@ import { withLoading } from '../utils/withLoading';
 import { authService } from '../services/authService';
 import { userService } from '../services/userService';
 import { setupSessionTimeout } from '../utils/sessionTimeout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useNotification } from '../hooks/useNotification';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = !!user;
   const sessionTimeoutRef = useRef<(() => void) | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { notify } = useNotification();
 
   // Ativa/desativa session timeout
@@ -107,10 +108,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setRoles([]);
     if (sessionTimeoutRef.current) sessionTimeoutRef.current();
-    if (message) {
+    // Só exibe notificação se não estiver em /login, /register, /sobre, /forgot-password ou /reset-password
+    const path = location.pathname;
+    const isPublic =
+      path === '/login' ||
+      path === '/register' ||
+      path === '/sobre' ||
+      path === '/forgot-password' ||
+      path.startsWith('/reset-password');
+    if (message && !isPublic) {
       notify(message, 'info');
     }
-    navigate('/login', { replace: true });
+    // Não redireciona para login se estiver em página pública
+    if (!isPublic) {
+      navigate('/login', { replace: true });
+    }
   }
 
   const getCurrentUser: AuthContextType['getCurrentUser'] = () =>

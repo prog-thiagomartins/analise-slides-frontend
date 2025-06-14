@@ -3,6 +3,7 @@ import logo from '../assets/santander-logo.svg';
 import { Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import Loader from '../components/ui/Loader';
+import PublicHeader from '../components/layout/PublicHeader';
 
 function sanitizeInput(input: string, maxLength = 100) {
   return input
@@ -64,8 +65,9 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 w-full">
-      <div className="flex-1 flex flex-col justify-center items-center w-full">
+    <div className="min-h-screen bg-neutral-50 flex flex-col pt-20">
+      <PublicHeader />
+      <main className="flex-1 w-full flex flex-col justify-center items-center">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 flex flex-col items-center">
           <img src={logo} alt="Santander" className="h-12 mb-4" />
           <h1 className="text-2xl font-bold text-primary-700 mb-1 text-center">
@@ -127,10 +129,7 @@ const ForgotPassword: React.FC = () => {
             </Link>
           </div>
         </div>
-      </div>
-      <footer className="mt-8 mb-2 text-xs text-gray-400 text-center select-none">
-        Santander Finance Analytics • © 2025
-      </footer>
+      </main>
     </div>
   );
 };

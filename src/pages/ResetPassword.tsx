@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import Loader from '../components/ui/Loader';
+import PublicHeader from '../components/layout/PublicHeader';
 
 function sanitizeInput(input: string, maxLength = 100) {
   return input
@@ -103,81 +104,84 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-2 text-center">Redefinir Senha</h1>
-        <p className="text-sm text-gray-500 mb-6 text-center">
-          Crie uma nova senha para acessar sua conta.
-        </p>
-        {error && (
-          <div className="w-full bg-red-100 text-red-700 px-4 py-2 rounded-md mb-4 text-center text-xs font-medium">
-            {error}
-            {error.includes('Token inválido ou expirado') && (
-              <div className="mt-2">
-                <Link
-                  to="/forgot-password"
-                  className="text-primary-600 hover:underline"
-                >
-                  Solicitar nova redefinição
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-        {success && (
-          <div className="w-full bg-green-100 text-green-700 px-4 py-2 rounded-md mb-4 text-center text-xs font-medium">
-            {success}
-          </div>
-        )}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full space-y-4"
-          autoComplete="off"
-        >
-          <div className="flex flex-col gap-1">
-            <label htmlFor="password" className="text-sm font-medium">
-              Nova senha
-            </label>
-            <input
-              id="password"
-              type="password"
-              minLength={8}
-              maxLength={64}
-              placeholder="Crie uma nova senha"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className={`border rounded-md px-4 py-3 focus:outline-none focus:ring-2 ${formTouched && !validatePassword(password) ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-primary-600'}`}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="confirmPassword" className="text-sm font-medium">
-              Confirmar nova senha
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              minLength={8}
-              maxLength={64}
-              placeholder="Repita a nova senha"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              className={`border rounded-md px-4 py-3 focus:outline-none focus:ring-2 ${formTouched && password !== confirmPassword ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-primary-600'}`}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-md transition flex items-center justify-center disabled:opacity-60 hover:scale-105"
+    <div className="min-h-screen bg-neutral-50 flex flex-col pt-20">
+      <PublicHeader />
+      <main className="flex-1 w-full flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center">
+          <h1 className="text-2xl font-bold mb-2 text-center">Redefinir Senha</h1>
+          <p className="text-sm text-gray-500 mb-6 text-center">
+            Crie uma nova senha para acessar sua conta.
+          </p>
+          {error && (
+            <div className="w-full bg-red-100 text-red-700 px-4 py-2 rounded-md mb-4 text-center text-xs font-medium">
+              {error}
+              {error.includes('Token inválido ou expirado') && (
+                <div className="mt-2">
+                  <Link
+                    to="/forgot-password"
+                    className="text-primary-600 hover:underline"
+                  >
+                    Solicitar nova redefinição
+                  </Link>
+                </div>
+              )}
+            </div>
+          )}
+          {success && (
+            <div className="w-full bg-green-100 text-green-700 px-4 py-2 rounded-md mb-4 text-center text-xs font-medium">
+              {success}
+            </div>
+          )}
+          <form
+            onSubmit={handleSubmit}
+            className="w-full space-y-4"
+            autoComplete="off"
           >
-            {loading ? <Loader /> : 'Redefinir Senha'}
-          </button>
-        </form>
-        <div className="mt-4 text-sm">
-          <Link to="/login" className="text-primary-600 hover:underline">
-            Voltar ao login
-          </Link>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="password" className="text-sm font-medium">
+                Nova senha
+              </label>
+              <input
+                id="password"
+                type="password"
+                minLength={8}
+                maxLength={64}
+                placeholder="Crie uma nova senha"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className={`border rounded-md px-4 py-3 focus:outline-none focus:ring-2 ${formTouched && !validatePassword(password) ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-primary-600'}`}
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="confirmPassword" className="text-sm font-medium">
+                Confirmar nova senha
+              </label>
+              <input
+                id="confirmPassword"
+                type="password"
+                minLength={8}
+                maxLength={64}
+                placeholder="Repita a nova senha"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                className={`border rounded-md px-4 py-3 focus:outline-none focus:ring-2 ${formTouched && password !== confirmPassword ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-primary-600'}`}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 rounded-md transition flex items-center justify-center disabled:opacity-60 hover:scale-105"
+            >
+              {loading ? <Loader /> : 'Redefinir Senha'}
+            </button>
+          </form>
+          <div className="mt-4 text-sm">
+            <Link to="/login" className="text-primary-600 hover:underline">
+              Voltar ao login
+            </Link>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
