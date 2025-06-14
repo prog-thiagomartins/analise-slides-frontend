@@ -1,7 +1,7 @@
 import Sidebar from './Sidebar';
 // import Header from './Header';
 import MainContent from './MainContent';
-import Notification from './Notification';
+import Notification from '../ui/Notification';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

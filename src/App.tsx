@@ -1,25 +1,33 @@
 import AppLayout from './components/layout/AppLayout';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Nova from './pages/Nova';
-import Modelos from './pages/Modelos';
-import Historico from './pages/Historico';
-import Glossarios from './pages/Glossarios';
-import PaginaTeste from './pages/PaginaTeste';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import AppRouter from './routes/AppRouter';
+import { AuthProvider } from './contexts/AuthContext';
+import { AppProviders } from './contexts';
+
+const PUBLIC_ROUTES = ['/login', '/register', '/forgot-password'];
+
+function MainApp() {
+  const location = useLocation();
+  const isPublicPage =
+    PUBLIC_ROUTES.includes(location.pathname) ||
+    location.pathname.startsWith('/reset-password');
+  return isPublicPage ? (
+    <AppRouter />
+  ) : (
+    <AppLayout>
+      <AppRouter />
+    </AppLayout>
+  );
+}
 
 export default function App() {
   return (
     <Router>
-      <AppLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/nova" element={<Nova />} />
-          <Route path="/modelos" element={<Modelos />} />
-          <Route path="/historico" element={<Historico />} />
-          <Route path="/glossarios" element={<Glossarios />} />
-          <Route path="/PaginaTeste" element={<PaginaTeste />} />
-        </Routes>
-      </AppLayout>
+      <AppProviders>
+        <AuthProvider>
+          <MainApp />
+        </AuthProvider>
+      </AppProviders>
     </Router>
   );
 }

@@ -27,6 +27,20 @@ class AuthService {
       data
     );
   }
+
+  async forgotPassword(email: string): Promise<ApiResponse<void>> {
+    return apiService.post<void>(`${this.endpoint}/forgot-password`, { email });
+  }
+
+  async resetPassword(
+    token: string,
+    password: string
+  ): Promise<ApiResponse<void>> {
+    return apiService.post<void>(`${this.endpoint}/reset-password`, {
+      token,
+      password,
+    });
+  }
 }
 
 export const authService = new AuthService();

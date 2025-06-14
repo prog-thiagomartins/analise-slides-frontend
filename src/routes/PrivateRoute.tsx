@@ -9,6 +9,13 @@ interface PrivateRouteProps {
 
 export function PrivateRoute({ children, roles }: PrivateRouteProps) {
   const { isAuthenticated, user } = useAuth();
+  // Debug: mostrar valor da variável de ambiente
+  console.log('VITE_DISABLE_AUTH:', import.meta.env.VITE_DISABLE_AUTH);
+  const disableAuth = import.meta.env.VITE_DISABLE_AUTH === 'true';
+
+  if (disableAuth) {
+    return children;
+  }
 
   if (!isAuthenticated) {
     return (
@@ -23,7 +30,7 @@ export function PrivateRoute({ children, roles }: PrivateRouteProps) {
   if (roles && user && !roles.some(role => user.roles?.includes(role))) {
     return (
       <Navigate
-        to="/"
+        to="/access-denied"
         replace
         state={{ message: 'Acesso negado: permissão insuficiente.' }}
       />

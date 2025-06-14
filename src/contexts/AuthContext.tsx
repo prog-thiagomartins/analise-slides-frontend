@@ -35,11 +35,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Verificação ativa de sessão ao carregar
   useEffect(() => {
+    const disableAuth = import.meta.env.VITE_DISABLE_AUTH === 'true';
+    if (disableAuth) {
+      setLoading(false);
+      return;
+    }
     withLoading(setLoading, async () => {
       try {
-        const currentUser = await userService.getCurrentUser();
-        setUser(currentUser);
-        setRoles(currentUser.roles || []);
+        const currentUserResp = await userService.getCurrentUser();
+        setUser(currentUserResp.data);
+        setRoles(currentUserResp.data.roles || []);
       } catch {
         logout('Sessão inválida ou expirada. Faça login novamente.');
       }
@@ -47,25 +52,49 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const login: AuthContextType['login'] = async (email, password) =>
-    withLoading(setLoading, async () => {
+  const login: AuthContextType['login'] = async (email, password) => {
+    const disableAuth = import.meta.env.VITE_DISABLE_AUTH === 'true';
+    if (disableAuth) {
+      // Mock user para ambiente de desenvolvimento
+      setUser({
+        id: 'dev-user',
+        name: 'Usuário Dev',
+        email,
+        avatar: undefined,
+        roles: ['admin'],
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      } as User);
+      setRoles(['admin']);
+      return { success: true, message: 'Login simulado (DEV).' };
+    }
+    return withLoading(setLoading, async () => {
       try {
-        const { user } = await authService.login(email, password);
-        setUser(user);
-        setRoles(user.roles || []);
+        const loginResp = await authService.login(email, password);
+        setUser(loginResp.data.user);
+        setRoles(loginResp.data.user.roles || []);
         return { success: true, message: 'Login realizado com sucesso.' };
-      } catch {
-        logout('Falha no login.');
-        return { success: false, message: 'Falha no login.' };
+      } catch (err) {
+        // @ts-expect-error: erro pode ser de qualquer tipo
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          return { success: false, message: 'Email ou senha incorretos.' };
+        }
+        // Erro de rede, conexão, timeout, etc.
+        return {
+          success: false,
+          message: 'Erro de conexão com o servidor ou API indisponível.',
+        };
       }
     });
+  };
 
   const register: AuthContextType['register'] = async data =>
     withLoading(setLoading, async () => {
       try {
-        const { user } = await authService.register(data);
-        setUser(user);
-        setRoles(user.roles || []);
+        const registerResp = await authService.register(data);
+        setUser(registerResp.data.user);
+        setRoles(registerResp.data.user.roles || []);
         return { success: true, message: 'Cadastro realizado com sucesso.' };
       } catch {
         logout('Falha no cadastro.');
@@ -87,9 +116,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const getCurrentUser: AuthContextType['getCurrentUser'] = () =>
     withLoading(setLoading, async () => {
       try {
-        const currentUser = await userService.getCurrentUser();
-        setUser(currentUser);
-        setRoles(currentUser.roles || []);
+        const currentUserResp = await userService.getCurrentUser();
+        setUser(currentUserResp.data);
+        setRoles(currentUserResp.data.roles || []);
       } catch {
         logout('Sessão inválida ou expirada. Faça login novamente.');
       }
@@ -98,9 +127,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const updateUser: AuthContextType['updateUser'] = async data =>
     withLoading(setLoading, async () => {
       try {
-        const updated = await userService.updateUser(data);
-        setUser(updated);
-        setRoles(updated.roles || []);
+        const updatedResp = await userService.updateUser(data);
+        setUser(updatedResp.data);
+        setRoles(updatedResp.data.roles || []);
         return { success: true, message: 'Dados atualizados com sucesso.' };
       } catch {
         return { success: false, message: 'Erro ao atualizar dados.' };

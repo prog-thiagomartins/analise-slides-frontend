@@ -1,16 +1,7 @@
-import type { User } from '../types/User';
-
-const USER_KEY = 'auth_user';
-
+// Removido o armazenamento de dados do usuário no localStorage para máxima segurança
 export const storage = {
-  setUser: (user: User) => localStorage.setItem(USER_KEY, JSON.stringify(user)),
-  getUser: (): User | null => {
-    const data = localStorage.getItem(USER_KEY);
-    return data ? JSON.parse(data) : null;
-  },
-  removeUser: () => localStorage.removeItem(USER_KEY),
-
-  clearAll: () => {
-    localStorage.removeItem(USER_KEY);
-  },
+  setUser: () => {}, // Não faz nada
+  getUser: () => null, // Sempre retorna null
+  removeUser: () => {}, // Não faz nada
+  clearAll: () => {}, // Não faz nada
 };

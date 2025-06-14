@@ -1,4 +1,9 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  type ReactNode,
+} from 'react';
 import type { User } from '../types';
 
 interface AppState {
@@ -81,6 +86,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => {
   const context = useContext(AppContext);
   if (context === undefined) {
