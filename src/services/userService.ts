@@ -1,26 +1,33 @@
 // src/services/userService.ts
 // Responsável por operações do usuário
-import axios from 'axios';
+import { apiService } from './api';
 import type { User } from '../types/User';
+import type { ApiResponse } from '../types';
 
-const API = '/api/user';
+class UserService {
+  private readonly endpoint = '/users';
 
-export const userService = {
-  async getCurrentUser() {
-    const response = await axios.get(`${API}/me`);
-    return response.data as User;
-  },
-  async updateUser(data: Partial<User>) {
-    const response = await axios.put(`${API}/me`, data);
-    return response.data as User;
-  },
-  async updatePassword(currentPassword: string, newPassword: string) {
-    await axios.post(`${API}/update-password`, {
+  async getCurrentUser(): Promise<ApiResponse<User>> {
+    return apiService.get<User>(`${this.endpoint}/me`);
+  }
+
+  async updateUser(data: Partial<User>): Promise<ApiResponse<User>> {
+    return apiService.put<User>(`${this.endpoint}/me`, data);
+  }
+
+  async updatePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<ApiResponse<void>> {
+    return apiService.post<void>(`${this.endpoint}/update-password`, {
       currentPassword,
       newPassword,
     });
-  },
-  async deleteAccount() {
-    await axios.delete(`${API}/me`);
-  },
-};
+  }
+
+  async deleteAccount(): Promise<ApiResponse<void>> {
+    return apiService.delete<void>(`${this.endpoint}/me`);
+  }
+}
+
+export const userService = new UserService();

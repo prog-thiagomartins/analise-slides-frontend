@@ -1,9 +1,5 @@
-import axios, {
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-  AxiosError,
-} from 'axios';
+import axios from 'axios';
+import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { ApiResponse } from '../types';
 
 class ApiService {
@@ -52,7 +48,7 @@ class ApiService {
     return response.data;
   }
 
-  async post<T>(url: string, data?: any): Promise<ApiResponse<T>> {
+  async post<T, D = unknown>(url: string, data?: D): Promise<ApiResponse<T>> {
     const response: AxiosResponse<ApiResponse<T>> = await this.api.post(
       url,
       data
@@ -60,7 +56,7 @@ class ApiService {
     return response.data;
   }
 
-  async put<T>(url: string, data?: any): Promise<ApiResponse<T>> {
+  async put<T, D = unknown>(url: string, data?: D): Promise<ApiResponse<T>> {
     const response: AxiosResponse<ApiResponse<T>> = await this.api.put(
       url,
       data

@@ -1,18 +1,32 @@
 // src/services/authService.ts
 // Responsável por autenticação
-import axios from 'axios';
+import { apiService } from './api';
 import type { User } from '../types/User';
+import type { ApiResponse } from '../types';
 
-const API = '/api/auth';
+class AuthService {
+  private readonly endpoint = '/auth';
 
-export const authService = {
-  login: async (email: string, password: string) => {
-    const response = await axios.post(`${API}/login`, { email, password });
-    return response.data as { token: string; user: User };
-  },
+  async login(
+    email: string,
+    password: string
+  ): Promise<ApiResponse<{ user: User; token: string }>> {
+    return apiService.post<{ user: User; token: string }>(
+      `${this.endpoint}/login`,
+      { email, password }
+    );
+  }
 
-  register: async (data: { name: string; email: string; password: string }) => {
-    const response = await axios.post(`${API}/register`, data);
-    return response.data as { token: string; user: User };
-  },
-};
+  async register(data: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<ApiResponse<{ user: User; token: string }>> {
+    return apiService.post<{ user: User; token: string }>(
+      `${this.endpoint}/register`,
+      data
+    );
+  }
+}
+
+export const authService = new AuthService();
