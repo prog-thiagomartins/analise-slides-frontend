@@ -9,7 +9,7 @@ import { authService } from '../services/authService';
 import { userService } from '../services/userService';
 import { setupSessionTimeout } from '../utils/sessionTimeout';
 import { useNavigate } from 'react-router-dom';
-import { useNotification } from '../contexts/NotificationContext';
+import { useNotification } from '../hooks/useNotification';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

@@ -1,6 +1,6 @@
 import {
   createContext,
-  useContext,
+  // useContext, // removido pois não é mais usado
   useState,
   useCallback,
   type ReactNode,
@@ -66,11 +66,4 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useNotification() {
-  const context = useContext(NotificationContext);
-  if (!context)
-    throw new Error(
-      'useNotification deve ser usado dentro de NotificationProvider'
-    );
-  return context;
-}
+export { NotificationContext };
