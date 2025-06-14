@@ -94,12 +94,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     withLoading(setLoading, async () => {
       try {
         const registerResp = await authService.register(data);
-        setUser(registerResp.data.user);
-        setRoles(registerResp.data.user.roles || []);
-        return { success: true, message: 'Cadastro realizado com sucesso.' };
-      } catch {
-        logout('Falha no cadastro.');
-        return { success: false, message: 'Falha no cadastro.' };
+        const userObj = registerResp.data.user || registerResp.data;
+        setUser(userObj);
+        setRoles(userObj.roles || []);
+        return {
+          success: registerResp.success,
+          message: registerResp.message || 'Cadastro realizado com sucesso.',
+        };
+      } catch (err: unknown) {
+        // Tenta extrair mensagem detalhada do backend
+        type BackendError = {
+          response?: {
+            status?: number;
+            data?: {
+              detail?: string;
+              message?: string;
+              errors?: { msg?: string }[];
+            };
+          };
+        };
+        const errorTyped = err as BackendError;
+        const data = errorTyped.response?.data;
+        const status = errorTyped.response?.status;
+        const detail =
+          data?.errors?.[0]?.msg ||
+          data?.message ||
+          data?.detail ||
+          (status === 409 && (data?.detail || data?.message || 'Este e-mail já está cadastrado. Tente recuperar a senha ou use outro e-mail.'));
+        return {
+          success: false,
+          message: detail || 'Falha no cadastro.',
+        };
       }
     });
 

@@ -22,6 +22,7 @@ const Register = lazy(() => import('../pages/Register'));
 const ForgotPassword = lazy(() => import('../pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('../pages/ResetPassword'));
 const AboutPlatform = lazy(() => import('../pages/AboutPlatform'));
+const Documentation = lazy(() => import('../pages/Documentation'));
 
 function AppRouter() {
   const { isAuthenticated } = useAuth();
@@ -35,6 +36,7 @@ function AppRouter() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/sobre" element={<AboutPlatform />} />
+        <Route path="/documentacao" element={<Documentation />} />
 
         {/* Private routes com layout */}
         <Route
