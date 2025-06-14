@@ -11,4 +11,5 @@ export interface User {
   status: UserStatus;
   createdAt: string;
   updatedAt: string;
+  roles: string[];
 }
